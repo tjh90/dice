@@ -9,6 +9,9 @@
 **/.project
 **/.settings
 
+# VSCode.
+.vscode
+
 # Dice files.
 *.dic
 
@@ -17,3 +20,6 @@ installer/Dice/
 installer/jre/
 installer/libs/
 *.zip
+
+# View3D.
+view3D/build/*

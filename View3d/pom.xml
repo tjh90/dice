@@ -1,0 +1,76 @@
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>view3d</artifactId>
+    <name>Dice 3D View</name>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>dice</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.0.0</version>
+        <relativePath>../pom-parent.xml</relativePath>
+    </parent>
+
+    <properties>
+        <cmake.build.dir>${project.basedir}/build</cmake.build.dir>
+        <cmake.release.type>release</cmake.release.type>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${cmake.build.dir}</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <workingDirectory>${cmake.build.dir}</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-makefiles</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>cmake</executable>
+                            <arguments>
+                                <argument>-G</argument>
+                                <argument>MinGW Makefiles</argument>
+                                <argument>-D</argument>
+                                <argument>CMAKE_BUILD_TYPE=${cmake.release.type}</argument>
+                                <argument>..</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mingw32-make</executable>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
