@@ -1,49 +1,22 @@
+#include "pch.hpp"
+
 #include "App.hpp"
 
-#include <stdexcept>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "Cube.hpp"
+#include "Shaders.hpp"
 
 using namespace dice::view3d;
 
-App::App()
+App::App(GLFWwindow* pWnd) :
+    m_pWnd(pWnd)
 {
-    // OpenGL setup.
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, sc_openGlMajorVersion);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, sc_openGlMinorVersion);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // Create shaders.
+    const GLchar* vertexShaderSrc = Shaders::GetVertexShaderSource();
+    const GLchar* fragmentShaderSrc = Shaders::GetFragmentShaderSource();
+    m_pShader = std::make_unique<Shader>(vertexShaderSrc, fragmentShaderSrc);
 
-    m_pWnd = glfwCreateWindow(sc_viewportSizeX, sc_viewportSizeY, "Learn OpenGL", nullptr, nullptr);
-    if (!m_pWnd)
-    {
-        throw std::runtime_error("Failed to create GLFW window.");
-    }
-    glfwMakeContextCurrent(m_pWnd);
-
-    // Set up viewport size with a callback.
-    GLFWframebuffersizefun resizeCallback = [] (GLFWwindow*, int width, int height)
-    {
-        glViewport(0, 0, width, height);
-    };
-    glfwSetFramebufferSizeCallback(m_pWnd, resizeCallback);
-
-    // GLAD steup.
-    GLADloadproc procFunc = reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
-    if (!gladLoadGLLoader(procFunc))
-    {
-        throw std::runtime_error("Failed to initialise GLAD.");
-    }
-
+    // Create renderables.
     m_pCube = std::make_unique<Cube>();
-}
-
-App::~App()
-{
-    glfwTerminate();
 }
 
 void App::RenderLoop()
@@ -74,8 +47,10 @@ void App::ProcessInput()
 
 void App::Render()
 {
-    if (m_pCube)
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    if (m_pShader)
     {
-        m_pCube->Render();
+        m_renderer.Render(m_pCube.get(), *m_pShader);
     }
 }

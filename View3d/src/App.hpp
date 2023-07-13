@@ -3,31 +3,29 @@
 
 #include <memory>
 
+#include "IRenderable.hpp"
+#include "Renderer.hpp"
+#include "Shader.hpp"
+
 class GLFWwindow;
 
 namespace dice::view3d
 {
 
-class Cube;
-
 class App
 {
 public:
-    App();
-    ~App();
+    explicit App(GLFWwindow* pWnd);
 
     void RenderLoop();
 
 private:
-    static constexpr int sc_openGlMajorVersion = 4;
-    static constexpr int sc_openGlMinorVersion = 6;
+    GLFWwindow* m_pWnd;
 
-    static constexpr int sc_viewportSizeX = 1024;
-    static constexpr int sc_viewportSizeY = 768;
+    Renderer m_renderer;
 
-    GLFWwindow* m_pWnd = nullptr;
-
-    std::unique_ptr<Cube> m_pCube;
+    std::unique_ptr<Shader> m_pShader;
+    std::unique_ptr<IRenderable> m_pCube;
 
     void ProcessInput();
     void Render();

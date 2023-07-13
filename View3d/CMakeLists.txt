@@ -17,13 +17,19 @@ SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Source files.
 INCLUDE_DIRECTORIES(src)
-SET(SRC src/View3d.cpp
+SET(SRC src/View3D.cpp
         src/App.cpp
         src/Cube.cpp
-        src/glad.c)
+        src/Renderer.cpp
+        src/Shader.cpp
+        src/Shaders.cpp)
+
+# Add static library for Glad.
+ADD_LIBRARY(Glad STATIC src/glad.c)
 
 # Add exe target.
 ADD_EXECUTABLE(View3D ${SRC})
 TARGET_SOURCES(View3D PUBLIC ${SRC})
 
-TARGET_LINK_LIBRARIES(View3D PUBLIC glfw3 gdi32)
+TARGET_PRECOMPILE_HEADERS(View3D PUBLIC src/pch.hpp)
+TARGET_LINK_LIBRARIES(View3D PUBLIC glfw3 gdi32 Glad)
