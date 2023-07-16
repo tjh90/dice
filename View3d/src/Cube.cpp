@@ -2,9 +2,12 @@
 
 #include "Cube.hpp"
 
+#include "Shader.hpp"
+
 using namespace dice::view3d;
 
-Cube::Cube()
+Cube::Cube(const std::weak_ptr<Shader>& pShader) :
+    m_pShader(pShader)
 {
     // Define vertex array.
     glGenVertexArrays(1, &m_vertexArray);
@@ -40,4 +43,9 @@ GLuint Cube::GetElementArrayBuffer() const
 GLsizei Cube::GetElementCount() const
 {
     return static_cast<int>(m_indices.size());
+}
+
+std::weak_ptr<Shader> Cube::GetShader() const
+{
+    return m_pShader;
 }

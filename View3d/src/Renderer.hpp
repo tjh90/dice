@@ -7,7 +7,6 @@ namespace dice::view3d
 {
 
 class IRenderable;
-class Shader;
 
 class Renderer
 {
@@ -16,7 +15,7 @@ public:
 
     void SetMode(GLenum mode);
 
-    void Render(const IRenderable* pRenderable, const Shader& shader) const;
+    void Render(const IRenderable* pRenderable) const;
 
 private:
     static constexpr GLenum sc_defaultMode = GL_FILL;

@@ -1,28 +1,28 @@
 #ifndef DICE_VIEW3D_CUBE_HPP
 #define DICE_VIEW3D_CUBE_HPP
 
-#include <glad/glad.h>
-#include <GL/gl.h>
-
-#include <vector>
-
 #include "IRenderable.hpp"
 
 namespace dice::view3d
 {
 
+class Shader;
+
 class Cube : public IRenderable
 {
 public:
-    Cube();
+    explicit Cube(const std::weak_ptr<Shader>& pShader);
     ~Cube();
 
     GLuint GetElementArrayBuffer() const override;
     GLsizei GetElementCount() const override;
+    std::weak_ptr<Shader> GetShader() const override;
 
 private:
     static constexpr GLint sc_dimensions = 3;
     static constexpr GLsizei sc_stride = 3 * sizeof(float);
+
+    const std::weak_ptr<Shader> m_pShader;
 
     std::vector<float> m_vertices =
     {

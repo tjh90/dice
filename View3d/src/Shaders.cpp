@@ -2,27 +2,53 @@
 
 #include "Shaders.hpp"
 
+#include "Shader.hpp"
+
 using namespace dice::view3d;
 
-const GLchar* Shaders::sc_vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
-const GLchar* Shaders::sc_fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "}\n\0";
+namespace fs = std::filesystem;
 
-const GLchar* Shaders::GetVertexShaderSource()
+const fs::path Shaders::sc_cubeVertexShaderPath = "./shaders/Cube.vert";
+const fs::path Shaders::sc_cubeFragmentShaderPath = "./shaders/Cube.frag";
+
+std::unique_ptr<Shaders> Shaders::sc_pInstance = nullptr;
+
+Shaders* Shaders::GetInstance()
 {
-    return sc_vertexShaderSource;
+    if (!sc_pInstance)
+    {
+        sc_pInstance = std::unique_ptr<Shaders>(new Shaders);
+    }
+
+    return sc_pInstance.get();
 }
 
-const GLchar* Shaders::GetFragmentShaderSource()
+std::weak_ptr<Shader> Shaders::GetCubeShader()
 {
-    return sc_fragmentShaderSource;
+    if (!m_pCubeShader)
+    {
+        const GLchar* vertexShader = LoadShader(sc_cubeVertexShaderPath);
+        const GLchar* fragmentShader = LoadShader(sc_cubeFragmentShaderPath);
+
+        m_pCubeShader = std::make_shared<Shader>(vertexShader, fragmentShader);
+    }
+
+    return m_pCubeShader;
+}
+
+const GLchar* Shaders::LoadShader(const fs::path& shaderPath)
+{
+    auto it = m_shaderPathMap.find(shaderPath);
+    bool requiresLoading = it == m_shaderPathMap.end() || it->second.empty();
+    if (requiresLoading && fs::exists(shaderPath))
+    {
+        std::fstream file(shaderPath, std::ios::in);
+        std::uintmax_t fileSize = fs::file_size(shaderPath);
+        std::string content(fileSize, '\0');
+        file.read(content.data(), fileSize);
+
+        m_shaderPathMap[shaderPath] = content;
+    }
+
+    return m_shaderPathMap[shaderPath].c_str();
 }

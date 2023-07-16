@@ -27,14 +27,17 @@ void Renderer::SetMode(GLenum mode)
     }
 }
 
-void Renderer::Render(const IRenderable* pRenderable, const Shader& shader) const
+void Renderer::Render(const IRenderable* pRenderable) const
 {
     if (!pRenderable)
     {
         return;
     }
 
-    glUseProgram(shader.GetShaderProgram());
+    std::shared_ptr<Shader> pShader = pRenderable->GetShader().lock();
+    GLuint shaderProgram = pShader ? pShader->GetShaderProgram() : 0U;
+    glUseProgram(shaderProgram);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pRenderable->GetElementArrayBuffer());
     glDrawElements(GL_TRIANGLES, pRenderable->GetElementCount(), GL_UNSIGNED_INT, 0);
 }

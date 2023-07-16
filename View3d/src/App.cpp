@@ -3,20 +3,25 @@
 #include "App.hpp"
 
 #include "Cube.hpp"
+#include "Shader.hpp"
 #include "Shaders.hpp"
 
 using namespace dice::view3d;
 
 App::App(GLFWwindow* pWnd) :
-    m_pWnd(pWnd)
+    m_pWnd(pWnd),
+    m_pShaders(Shaders::GetInstance())
 {
-    // Create shaders.
-    const GLchar* vertexShaderSrc = Shaders::GetVertexShaderSource();
-    const GLchar* fragmentShaderSrc = Shaders::GetFragmentShaderSource();
-    m_pShader = std::make_unique<Shader>(vertexShaderSrc, fragmentShaderSrc);
-
     // Create renderables.
-    m_pCube = std::make_unique<Cube>();
+    if (!m_pShaders)
+    {
+        throw std::runtime_error("Failed to initialise shaders.");
+    }
+
+    std::weak_ptr<Shader> pCubeShader = m_pShaders->GetCubeShader();
+    std::unique_ptr<Cube> pCube = std::make_unique<Cube>(pCubeShader);
+
+    m_renderables.push_back(std::move(pCube));
 }
 
 void App::RenderLoop()
@@ -49,8 +54,8 @@ void App::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    if (m_pShader)
+    for (std::unique_ptr<IRenderable>& pRenderable : m_renderables)
     {
-        m_renderer.Render(m_pCube.get(), *m_pShader);
+        m_renderer.Render(pRenderable.get());
     }
 }

@@ -11,6 +11,7 @@ class Shader
 {
 public:
     Shader(const GLchar* vertexShaderSrc, const GLchar* fragmentShaderSrc);
+    Shader(const Shader& other) = delete;
     ~Shader();
 
     GLuint GetShaderProgram() const;
