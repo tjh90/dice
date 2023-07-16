@@ -4,6 +4,9 @@
 
 using namespace dice::view3d;
 
+const GLchar* Shader::sc_projectionName = "projection";
+const GLchar* Shader::sc_transformName = "transform";
+
 Shader::Shader(const GLchar* vertexShaderSrc, const GLchar* fragmentShaderSrc)
 {
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -14,10 +17,10 @@ Shader::Shader(const GLchar* vertexShaderSrc, const GLchar* fragmentShaderSrc)
     glShaderSource(fragmentShader, 1, &fragmentShaderSrc, nullptr);
     glCompileShader(fragmentShader);
 
-    m_shaderProgram = glCreateProgram();
-    glAttachShader(m_shaderProgram, vertexShader);
-    glAttachShader(m_shaderProgram, fragmentShader);
-    glLinkProgram(m_shaderProgram);
+    m_id = glCreateProgram();
+    glAttachShader(m_id, vertexShader);
+    glAttachShader(m_id, fragmentShader);
+    glLinkProgram(m_id);
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -25,10 +28,30 @@ Shader::Shader(const GLchar* vertexShaderSrc, const GLchar* fragmentShaderSrc)
 
 Shader::~Shader()
 {
-    glDeleteProgram(m_shaderProgram);
+    glDeleteProgram(m_id);
 }
 
-GLuint Shader::GetShaderProgram() const
+GLuint Shader::GetShaderId() const
 {
-    return m_shaderProgram;
+    return m_id;
+}
+
+const glm::mat4& Shader::GetProjection() const
+{
+    return m_projection;
+}
+
+void Shader::SetProjection(const glm::mat4& projection)
+{
+    m_projection = projection;
+}
+
+const glm::mat4& Shader::GetTransform() const
+{
+    return m_transform;
+}
+
+void Shader::SetTransform(const glm::mat4& transform)
+{
+    m_transform = transform;
 }

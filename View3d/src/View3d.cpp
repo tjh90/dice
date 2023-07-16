@@ -25,13 +25,6 @@ int main()
     }
     glfwMakeContextCurrent(pWnd);
 
-    // Set up viewport size with a callback.
-    GLFWframebuffersizefun resizeCallback = [] (GLFWwindow*, int width, int height)
-    {
-        glViewport(0, 0, width, height);
-    };
-    glfwSetFramebufferSizeCallback(pWnd, resizeCallback);
-
     // GLAD steup.
     GLADloadproc procFunc = reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
     if (!gladLoadGLLoader(procFunc))
@@ -40,7 +33,7 @@ int main()
     }
 
     // Run app.
-    App app(pWnd);
+    App app(pWnd, sc_viewportSizeX, sc_viewportSizeY);
     app.RenderLoop();
 
     // Clean up.

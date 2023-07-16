@@ -19,6 +19,7 @@ SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 INCLUDE_DIRECTORIES(src)
 SET(SRC src/View3D.cpp
         src/App.cpp
+        src/Camera.cpp
         src/Cube.cpp
         src/Renderer.cpp
         src/Shader.cpp
