@@ -23,7 +23,8 @@ public:
 
     GLuint GetShaderId() const;
 
-    void SetColour(unsigned int r, unsigned int g, unsigned int b);
+    const Colour& GetColour() const;
+    void SetColour(const Colour& colour);
 
     const glm::mat4& GetProjection() const;
     void SetProjection(const glm::mat4& projection);

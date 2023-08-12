@@ -56,14 +56,14 @@ GLuint Shader::GetShaderId() const
     return m_id;
 }
 
-void Shader::SetColour(unsigned int r, unsigned int g, unsigned int b)
+const Colour& Shader::GetColour() const
 {
-    m_colour = { NormaliseColour(r), NormaliseColour(g), NormaliseColour(b), 1.0f };
+    return m_colour;
 }
 
-float Shader::NormaliseColour(unsigned int pixel)
+void Shader::SetColour(const Colour& colour)
 {
-    return (pixel % 256) / 256;
+    m_colour = colour;
 }
 
 const glm::mat4& Shader::GetProjection() const

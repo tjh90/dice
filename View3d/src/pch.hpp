@@ -16,3 +16,5 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+
+typedef glm::vec4 Colour;

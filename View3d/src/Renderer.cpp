@@ -56,16 +56,21 @@ void Renderer::Render(IRenderable* pRenderable) const
     GLuint shaderId = pShader->GetShaderId();
     glUseProgram(shaderId);
 
+    // Colour
+    const glm::vec4& colour = pShader->GetColour();
+    GLint colourLoc = glGetUniformLocation(shaderId, Shader::sc_colourName);
+    glUniform4fv(colourLoc, 1, glm::value_ptr(colour));
+
     // Projection.
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), s_aspectRatio, 0.1f, 100.0f);
+    const glm::mat4& projection = glm::perspective(glm::radians(45.0f), s_aspectRatio, 0.1f, 100.0f);
     GLint projectionLoc = glGetUniformLocation(shaderId, Shader::sc_projectionName);
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     // Transform.
-    glm::mat4 transform = pShader->GetTransform();
+    const glm::mat4& transform = pShader->GetTransform();
     GLint transformLoc = glGetUniformLocation(shaderId, Shader::sc_transformName);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pRenderable->GetElementArrayBuffer());
+    pRenderable->Bind();
     glDrawElements(GL_TRIANGLES, pRenderable->GetElementCount(), GL_UNSIGNED_INT, 0);
 }

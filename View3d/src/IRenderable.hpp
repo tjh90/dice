@@ -13,10 +13,10 @@ class IRenderable
 public:
     ~IRenderable() = default;
 
-    virtual GLuint GetElementArrayBuffer() const = 0;
     virtual GLsizei GetElementCount() const = 0;
-
     virtual std::shared_ptr<Shader> GetShader() = 0;
+
+    virtual void Bind() const = 0;
 };
 
 }

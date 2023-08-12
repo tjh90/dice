@@ -17,9 +17,9 @@ public:
     Cube(const std::shared_ptr<Shader>& pShader, const glm::vec3& centre);
     ~Cube();
 
-    GLuint GetElementArrayBuffer() const override;
     GLsizei GetElementCount() const override;
     std::shared_ptr<Shader> GetShader() override;
+    void Bind() const override;
 
 private:
     static constexpr GLint sc_dimensions = 3;
@@ -33,9 +33,9 @@ private:
     glm::vec3 m_centre;
     std::vector<float> m_vertices;
 
-    GLuint m_vertexArray = 0U;
-    GLuint m_vertexBuffer = 0U;
-    GLuint m_elementArrayBuffer = 0U;
+    GLuint m_vertexArrayId = 0U;
+    GLuint m_vertexBufferId = 0U;
+    GLuint m_elementBufferId = 0U;
 };
 
 }

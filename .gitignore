@@ -22,6 +22,7 @@ installer/libs/
 *.zip
 
 # View3D.
+build/
 view3D/build/*
 **/*.log
 glad.c

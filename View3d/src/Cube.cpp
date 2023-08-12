@@ -58,17 +58,17 @@ Cube::Cube(const std::shared_ptr<Shader>& pShader, const glm::vec3& centre) :
     }
 
     // Define vertex array.
-    glGenVertexArrays(1, &m_vertexArray);
-    glBindVertexArray(m_vertexArray);
+    glGenVertexArrays(1, &m_vertexArrayId);
+    glBindVertexArray(m_vertexArrayId);
 
     // Define vertex buffer.
-    glGenBuffers(1, &m_vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glGenBuffers(1, &m_vertexBufferId);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
     glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), m_vertices.data(), GL_DYNAMIC_DRAW);
 
     // Define element buffer.
-    glGenBuffers(1, &m_elementArrayBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayBuffer);
+    glGenBuffers(1, &m_elementBufferId);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBufferId);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sc_indices.size() * sizeof(unsigned int), sc_indices.data(), GL_DYNAMIC_DRAW);
 
     // Specify vertex buffer format.
@@ -78,14 +78,9 @@ Cube::Cube(const std::shared_ptr<Shader>& pShader, const glm::vec3& centre) :
 
 Cube::~Cube()
 {
-    glDeleteVertexArrays(1, &m_vertexArray);
-    glDeleteBuffers(1, &m_vertexBuffer);
-    glDeleteBuffers(1, &m_elementArrayBuffer);
-}
-
-GLuint Cube::GetElementArrayBuffer() const
-{
-    return m_elementArrayBuffer;
+    glDeleteVertexArrays(1, &m_vertexArrayId);
+    glDeleteBuffers(1, &m_vertexBufferId);
+    glDeleteBuffers(1, &m_elementBufferId);
 }
 
 GLsizei Cube::GetElementCount() const
@@ -96,4 +91,11 @@ GLsizei Cube::GetElementCount() const
 std::shared_ptr<Shader> Cube::GetShader()
 {
     return m_pShader;
+}
+
+void Cube::Bind() const
+{
+    glBindVertexArray(m_vertexArrayId);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBufferId);
 }
