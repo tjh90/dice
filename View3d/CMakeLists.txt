@@ -23,7 +23,7 @@ SET(SRC src/View3D.cpp
         src/Cube.cpp
         src/Renderer.cpp
         src/Shader.cpp
-        src/Shaders.cpp)
+        src/ShaderFactory.cpp)
 
 # Add static library for Glad.
 ADD_LIBRARY(Glad STATIC src/glad.c)

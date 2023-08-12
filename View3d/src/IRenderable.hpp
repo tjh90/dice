@@ -16,7 +16,7 @@ public:
     virtual GLuint GetElementArrayBuffer() const = 0;
     virtual GLsizei GetElementCount() const = 0;
 
-    virtual std::weak_ptr<Shader> GetShader() const = 0;
+    virtual std::shared_ptr<Shader> GetShader() = 0;
 };
 
 }

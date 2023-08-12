@@ -9,26 +9,18 @@ namespace dice::view3d
 
 class Shader;
 
-class Shaders
+class ShaderFactory
 {
 public:
-    static Shaders* GetInstance();
-
-    std::weak_ptr<Shader> GetCubeShader();
+    std::shared_ptr<Shader> CreateCubeShader();
 
 private:
     static const std::filesystem::path sc_cubeVertexShaderPath;
     static const std::filesystem::path sc_cubeFragmentShaderPath;
 
-    static std::unique_ptr<Shaders> sc_pInstance;
-
     std::unordered_map<std::filesystem::path, std::string> m_shaderPathMap = { };
 
-    Shaders() = default;
-
     const GLchar* LoadShader(const std::filesystem::path& shaderPath);
-
-    std::shared_ptr<Shader> m_pCubeShader;
 };
 
 }

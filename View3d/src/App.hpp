@@ -10,8 +10,6 @@ class GLFWwindow;
 namespace dice::view3d
 {
 
-class Shaders;
-
 class App
 {
 public:
@@ -22,7 +20,6 @@ public:
 private:
     GLFWwindow* m_pWnd;
     Renderer m_renderer;
-    Shaders* m_pShaders;
 
     std::vector<std::unique_ptr<IRenderable>> m_renderables;
 

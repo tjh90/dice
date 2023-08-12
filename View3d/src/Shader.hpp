@@ -11,6 +11,7 @@ namespace dice::view3d
 class Shader
 {
 public:
+    static const GLchar* sc_colourName;
     static const GLchar* sc_projectionName;
     static const GLchar* sc_transformName;
 
@@ -18,7 +19,11 @@ public:
     Shader(const Shader& other) = delete;
     ~Shader();
 
+    Shader& operator=(const Shader& other) = delete;
+
     GLuint GetShaderId() const;
+
+    void SetColour(unsigned int r, unsigned int g, unsigned int b);
 
     const glm::mat4& GetProjection() const;
     void SetProjection(const glm::mat4& projection);
@@ -29,8 +34,12 @@ public:
 private:
     GLuint m_id = 0U;
 
+    glm::vec4 m_colour { 1.0f };
+
     glm::mat4 m_projection { 1.0f };
     glm::mat4 m_transform { 1.0f };
+
+    static float NormaliseColour(unsigned int pixel);
 };
 
 }

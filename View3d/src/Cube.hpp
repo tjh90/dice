@@ -1,7 +1,10 @@
 #ifndef DICE_VIEW3D_CUBE_HPP
 #define DICE_VIEW3D_CUBE_HPP
 
+#include <glm/vec3.hpp>
+
 #include "IRenderable.hpp"
+#include "Shader.hpp"
 
 namespace dice::view3d
 {
@@ -11,31 +14,24 @@ class Shader;
 class Cube : public IRenderable
 {
 public:
-    explicit Cube(const std::weak_ptr<Shader>& pShader);
+    Cube(const std::shared_ptr<Shader>& pShader, const glm::vec3& centre);
     ~Cube();
 
     GLuint GetElementArrayBuffer() const override;
     GLsizei GetElementCount() const override;
-    std::weak_ptr<Shader> GetShader() const override;
+    std::shared_ptr<Shader> GetShader() override;
 
 private:
     static constexpr GLint sc_dimensions = 3;
     static constexpr GLsizei sc_stride = 3 * sizeof(float);
 
-    const std::weak_ptr<Shader> m_pShader;
+    static const std::vector<float> sc_vertices;
+    static const std::vector<unsigned int> sc_indices;
 
-    std::vector<float> m_vertices =
-    {
-        -0.5f, -0.5f,  0.0f,
-         0.5f, -0.5f,  0.0f,
-         0.5f,  0.5f,  0.0f,
-        -0.5f,  0.5f,  0.0f
-    };
+    const std::shared_ptr<Shader> m_pShader;
 
-    std::vector<unsigned int> m_indices =
-    {
-        0U, 1U, 2U, 0U, 2U, 3U
-    };
+    glm::vec3 m_centre;
+    std::vector<float> m_vertices;
 
     GLuint m_vertexArray = 0U;
     GLuint m_vertexBuffer = 0U;

@@ -4,28 +4,25 @@
 
 #include "Cube.hpp"
 #include "Shader.hpp"
-#include "Shaders.hpp"
+#include "ShaderFactory.hpp"
 
 using namespace dice::view3d;
 
 App::App(GLFWwindow* pWnd, int width, int height) :
-    m_pWnd(pWnd),
-    m_pShaders(Shaders::GetInstance())
+    m_pWnd(pWnd)
 {
     // Set up viewport size with a callback.
     glfwSetFramebufferSizeCallback(pWnd, ResizeCallback);
     ResizeCallback(pWnd, width, height);
 
     // Create renderables.
-    if (!m_pShaders)
-    {
-        throw std::runtime_error("Failed to initialise shaders.");
-    }
-
-    std::weak_ptr<Shader> pCubeShader = m_pShaders->GetCubeShader();
-    std::unique_ptr<Cube> pCube = std::make_unique<Cube>(pCubeShader);
+    ShaderFactory shaderFactory;
+    std::shared_ptr<Shader> pCubeShader = shaderFactory.CreateCubeShader();
+    std::unique_ptr<IRenderable> pCube = std::make_unique<Cube>(pCubeShader, glm::vec3 { 0.0f });
+    //std::unique_ptr<IRenderable> pCube2 = std::make_unique<Cube>(pCubeShader, glm::vec3 { 1.0f, 1.0f, 1.0f });
 
     m_renderables.push_back(std::move(pCube));
+    //m_renderables.push_back(std::move(pCube2));
 }
 
 void App::ResizeCallback(GLFWwindow*, int width, int height)
@@ -56,7 +53,6 @@ void App::ProcessInput()
     if (GLFW_PRESS == glfwGetKey(m_pWnd, GLFW_KEY_SPACE))
     {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     // Movement.
@@ -90,7 +86,7 @@ void App::ProcessInput()
     glm::mat4 view = m_camera.GetView();
     for (const auto& pRenderable : m_renderables)
     {
-        std::shared_ptr<Shader> pShader = pRenderable ? pRenderable->GetShader().lock() : nullptr;
+        std::shared_ptr<Shader> pShader = pRenderable ? pRenderable->GetShader() : nullptr;
         if (pShader)
         {
             pShader->SetTransform(view);

@@ -47,12 +47,7 @@ void Renderer::Render(const std::vector<std::unique_ptr<IRenderable>>& renderabl
 
 void Renderer::Render(IRenderable* pRenderable) const
 {
-    if (!pRenderable)
-    {
-        return;
-    }
-
-    std::shared_ptr<Shader> pShader = pRenderable->GetShader().lock();
+    std::shared_ptr<Shader> pShader = pRenderable ? pRenderable->GetShader() : nullptr;
     if (!pShader)
     {
         return;

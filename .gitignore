@@ -23,3 +23,5 @@ installer/libs/
 
 # View3D.
 view3D/build/*
+**/*.log
+glad.c
