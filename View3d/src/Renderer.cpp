@@ -2,10 +2,12 @@
 
 #include "Renderer.hpp"
 
-#include "IRenderable.hpp"
 #include "Shader.hpp"
 
+#include "renderable/IRenderable.hpp"
+
 using namespace dice::view3d;
+using namespace dice::view3d::renderable;
 
 float Renderer::s_aspectRatio = 1.0f;
 
@@ -20,6 +22,7 @@ void Renderer::SetMode(GLenum mode)
 {
     switch (mode)
     {
+        case GL_POINT: // Fallthrough.
         case GL_LINE: // Fallthrough.
         case GL_FILL:
             glPolygonMode(GL_FRONT_AND_BACK, mode);
@@ -28,6 +31,29 @@ void Renderer::SetMode(GLenum mode)
             // Do nothing.
             break;
     }
+}
+
+void Renderer::ToggleMode()
+{
+    GLint mode = 0;
+    glGetIntegerv(GL_POLYGON_MODE, &mode);
+    switch (mode)
+    {
+        case GL_POINT:
+            mode = GL_LINE;
+            break;
+        case GL_LINE:
+            mode = GL_FILL;
+            break;
+        case GL_FILL:
+            mode = GL_POINT;
+            break;
+        default:
+            // Do nothing.
+            break;
+    }
+
+    SetMode(mode);
 }
 
 void Renderer::SetAspectRatio(float aspectRatio)

@@ -20,10 +20,12 @@ INCLUDE_DIRECTORIES(src)
 SET(SRC src/View3D.cpp
         src/App.cpp
         src/Camera.cpp
-        src/Cube.cpp
         src/Renderer.cpp
         src/Shader.cpp
-        src/ShaderFactory.cpp)
+        src/ShaderFactory.cpp
+        src/renderable/Cube.cpp
+        src/renderable/Shape.cpp
+        src/renderable/Tetrahedron.cpp)
 
 # Add static library for Glad.
 ADD_LIBRARY(Glad STATIC src/glad.c)

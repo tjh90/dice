@@ -2,11 +2,14 @@
 
 #include "App.hpp"
 
-#include "Cube.hpp"
 #include "Shader.hpp"
 #include "ShaderFactory.hpp"
 
+#include "renderable/Cube.hpp"
+#include "renderable/Tetrahedron.hpp"
+
 using namespace dice::view3d;
+using namespace dice::view3d::renderable;
 
 #ifdef DEBUG
 std::ofstream g_log = std::ofstream("./log.log");
@@ -31,6 +34,9 @@ App::App(GLFWwindow* pWnd, int width, int height) :
     glfwSetFramebufferSizeCallback(pWnd, ResizeCallback);
     ResizeCallback(pWnd, width, height);
 
+    // Set up keyboard callback.
+    glfwSetKeyCallback(pWnd, KeyboardCallback);
+
     // Create renderables.
     ShaderFactory shaderFactory;
 
@@ -38,18 +44,45 @@ App::App(GLFWwindow* pWnd, int width, int height) :
     std::shared_ptr<Shader> pCubeShader = shaderFactory.CreateCubeShader(&cubeColour);
     std::unique_ptr<IRenderable> pCube = std::make_unique<Cube>(pCubeShader, glm::vec3 { 0.0f });
 
-    Colour cube2Colour = ShaderFactory::CreateColour(0, 128U, 0U);
+    Colour cube2Colour = ShaderFactory::CreateColour(0U, 128U, 0U);
     std::shared_ptr<Shader> pCube2Shader = shaderFactory.CreateCubeShader(&cube2Colour);
-    std::unique_ptr<IRenderable> pCube2 = std::make_unique<Cube>(pCube2Shader, glm::vec3 { 0.0f, 0.0f, -10.0f });
+    std::unique_ptr<IRenderable> pCube2 = std::make_unique<Cube>(pCube2Shader, glm::vec3 { 0.0f, 0.0f, 4.0f });
+
+    Colour tetrahedronColour = ShaderFactory::CreateColour(0U, 0U, 128U);
+    std::shared_ptr<Shader> pTetrahedronShader = shaderFactory.CreateCubeShader(&tetrahedronColour);
+    std::unique_ptr<IRenderable> pTetrahedron = std::make_unique<Tetrahedron>(pTetrahedronShader, glm::vec3 { 2.0f, 0.0f, 2.0f });
 
     m_renderables.push_back(std::move(pCube));
     m_renderables.push_back(std::move(pCube2));
+    m_renderables.push_back(std::move(pTetrahedron));
 }
 
 void App::ResizeCallback(GLFWwindow*, int width, int height)
 {
     Renderer::SetAspectRatio((1.0f * width) / height);
     glViewport(0, 0, width, height);
+}
+
+void App::KeyboardCallback(GLFWwindow* pWnd, int key, int, int action, int)
+{
+    bool isPressed = GLFW_PRESS == action;
+    if (isPressed)
+    {
+        switch(key)
+        {
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(pWnd, true);
+                break;
+            case GLFW_KEY_SPACE:
+                glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+                break;
+            case GLFW_KEY_M:
+                Renderer::ToggleMode();
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void App::RenderLoop()
@@ -67,15 +100,6 @@ void App::RenderLoop()
 
 void App::ProcessInput()
 {
-    if (GLFW_PRESS == glfwGetKey(m_pWnd, GLFW_KEY_ESCAPE))
-    {
-        glfwSetWindowShouldClose(m_pWnd, true);
-    }
-    if (GLFW_PRESS == glfwGetKey(m_pWnd, GLFW_KEY_SPACE))
-    {
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    }
-
     // Movement.
     std::vector<Camera::Direction> directions;
     if (GLFW_PRESS == glfwGetKey(m_pWnd, GLFW_KEY_W))

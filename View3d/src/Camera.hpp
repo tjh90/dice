@@ -29,7 +29,7 @@ private:
     static const glm::vec3 sc_front;
     static const std::unordered_map<Direction, glm::vec3> sc_directionMap;
 
-    glm::vec3 m_pos { 0.0f, 0.0f, 3.0f };
+    glm::vec3 m_pos { 0.0f, 0.5f, -3.0f };
 
     float m_speed = 0.01f;
 };
