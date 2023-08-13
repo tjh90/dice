@@ -14,7 +14,7 @@ class ShaderFactory
 public:
     static Colour CreateColour(unsigned int r, unsigned int g, unsigned int b);
 
-    std::shared_ptr<Shader> CreateCubeShader(const Colour* pColour = nullptr);
+    std::shared_ptr<Shader> CreateSimpleShader(const Colour* pColour = nullptr);
 
 private:
     static constexpr Colour sc_defaultColour = { 0.75, 0.75 , 0.75, 1.0 };

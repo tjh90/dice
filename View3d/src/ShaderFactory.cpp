@@ -11,7 +11,7 @@ namespace fs = std::filesystem;
 const fs::path ShaderFactory::sc_cubeVertexShaderPath = "./shaders/Cube.vert";
 const fs::path ShaderFactory::sc_cubeFragmentShaderPath = "./shaders/Cube.frag";
 
-std::shared_ptr<Shader> ShaderFactory::CreateCubeShader(const Colour* pColour)
+std::shared_ptr<Shader> ShaderFactory::CreateSimpleShader(const Colour* pColour)
 {
     const GLchar* vertexShader = LoadShader(sc_cubeVertexShaderPath);
     const GLchar* fragmentShader = LoadShader(sc_cubeFragmentShaderPath);

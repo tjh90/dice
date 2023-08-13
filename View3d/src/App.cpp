@@ -5,8 +5,8 @@
 #include "Shader.hpp"
 #include "ShaderFactory.hpp"
 
-#include "renderable/Cube.hpp"
-#include "renderable/Tetrahedron.hpp"
+#include "renderable/Floor.hpp"
+#include "renderable/ShapeFactory.hpp"
 
 using namespace dice::view3d;
 using namespace dice::view3d::renderable;
@@ -37,24 +37,43 @@ App::App(GLFWwindow* pWnd, int width, int height) :
     // Set up keyboard callback.
     glfwSetKeyCallback(pWnd, KeyboardCallback);
 
-    // Create renderables.
     ShaderFactory shaderFactory;
 
-    Colour cubeColour = ShaderFactory::CreateColour(128U, 0U, 0U);
-    std::shared_ptr<Shader> pCubeShader = shaderFactory.CreateCubeShader(&cubeColour);
-    std::unique_ptr<IRenderable> pCube = std::make_unique<Cube>(pCubeShader, glm::vec3 { 0.0f });
+    // Create floor.
+    Colour floorColour = ShaderFactory::CreateColour(8U, 32U, 8U);
+    std::shared_ptr<Shader> pFloorShader = shaderFactory.CreateSimpleShader(&floorColour);
+    std::unique_ptr<IRenderable> pFloor = std::make_unique<Floor>(pFloorShader, glm::vec3 { 0.0f });
+    m_renderables.push_back(std::move(pFloor));
 
-    Colour cube2Colour = ShaderFactory::CreateColour(0U, 128U, 0U);
-    std::shared_ptr<Shader> pCube2Shader = shaderFactory.CreateCubeShader(&cube2Colour);
-    std::unique_ptr<IRenderable> pCube2 = std::make_unique<Cube>(pCube2Shader, glm::vec3 { 0.0f, 0.0f, 4.0f });
+    // Create cubes.
+    std::vector<Colour> cubeColours =
+    {
+        ShaderFactory::CreateColour(128U, 0U, 0U),
+        ShaderFactory::CreateColour(0U, 128, 0U)
+    };
+    std::vector<glm::vec3> cubeCentres = { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 4.0f } };
+    for (size_t i = 0; i < cubeColours.size() && i < cubeCentres.size(); i++)
+    {
+        std::shared_ptr<Shader> pCubeShader = shaderFactory.CreateSimpleShader(&cubeColours[i]);
+        std::unique_ptr<IRenderable> pCube = ShapeFactory::CreateCube(pCubeShader, cubeCentres[i]);
+        m_renderables.push_back(std::move(pCube));
+    }
 
+    // Create tetrahedron.
     Colour tetrahedronColour = ShaderFactory::CreateColour(0U, 0U, 128U);
-    std::shared_ptr<Shader> pTetrahedronShader = shaderFactory.CreateCubeShader(&tetrahedronColour);
-    std::unique_ptr<IRenderable> pTetrahedron = std::make_unique<Tetrahedron>(pTetrahedronShader, glm::vec3 { 2.0f, 0.0f, 2.0f });
-
-    m_renderables.push_back(std::move(pCube));
-    m_renderables.push_back(std::move(pCube2));
+    std::shared_ptr<Shader> pTetrahedronShader = shaderFactory.CreateSimpleShader(&tetrahedronColour);
+    std::unique_ptr<IRenderable> pTetrahedron = ShapeFactory::CreateTetrahedron(pTetrahedronShader,
+                                                                                glm::vec3 { 2.0f, 0.0f, 2.0f });
     m_renderables.push_back(std::move(pTetrahedron));
+
+    // Create cylinder.
+    Colour cylinderColour = ShaderFactory::CreateColour(192U, 128U, 0U);
+    std::shared_ptr<Shader> pCylinderShader = shaderFactory.CreateSimpleShader(&cylinderColour);
+    std::unique_ptr<IRenderable> pCylinder = ShapeFactory::CreateCylinder(pCylinderShader,
+                                                                          glm::vec3 { -2.0f, 0.0f, 2.0f },
+                                                                          0.5f,
+                                                                          0.5f);
+    m_renderables.push_back(std::move(pCylinder));
 }
 
 void App::ResizeCallback(GLFWwindow*, int width, int height)

@@ -20,7 +20,7 @@ class Shape : public IRenderable
 public:
     Shape(const std::shared_ptr<Shader>& pShader,
           const glm::vec3& centre,
-          const std::vector<float>& vertices,
+          const std::vector<glm::vec3>& vertices,
           const std::vector<unsigned int>& elementIndices);
     virtual ~Shape();
 
@@ -32,13 +32,11 @@ protected:
     static constexpr GLint sc_dimensions = 3;
     static constexpr GLsizei sc_stride = 3 * sizeof(float);
 
-    void Initialise(const std::vector<float>& vertices, const std::vector<unsigned int>& elementIndices);
-
 private:
     const std::shared_ptr<Shader> m_pShader;
 
     glm::vec3 m_centre;
-    std::vector<float> m_vertices;
+    std::vector<glm::vec3> m_vertices;
     std::vector<unsigned int> m_elementIndices;
     bool m_isInitialised = false;
 
