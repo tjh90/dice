@@ -66,16 +66,6 @@ void Shader::SetColour(const Colour& colour)
     m_colour = colour;
 }
 
-const glm::mat4& Shader::GetProjection() const
-{
-    return m_projection;
-}
-
-void Shader::SetProjection(const glm::mat4& projection)
-{
-    m_projection = projection;
-}
-
 const glm::mat4& Shader::GetTransform() const
 {
     return m_transform;

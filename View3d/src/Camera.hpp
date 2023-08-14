@@ -3,35 +3,39 @@
 
 #include <glm/vec3.hpp>
 
+#include <memory>
+
 namespace dice::view3d
 {
 
 class Camera
 {
 public:
-enum class Direction
-{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    FORWARD,
-    BACK
-};
+    enum class Direction
+    {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        FORWARD,
+        BACK
+    };
 
     void Move(const std::vector<Direction>& directions);
+
+    static void ChangeSpeedFactor(bool increaseSpeed);
 
     glm::mat4 GetView() const;
 
 private:
-    static const glm::vec3 sc_left;
-    static const glm::vec3 sc_up;
-    static const glm::vec3 sc_front;
-    static const std::unordered_map<Direction, glm::vec3> sc_directionMap;
+    static constexpr float sc_speedIncrement = 1.0f;
+    static float s_speedFactor;
+
+    glm::vec3 m_left { 1.0f, 0.0f, 0.0f };
+    glm::vec3 m_up { 0.0f, 1.0f, 0.0f };
+    glm::vec3 m_front { 0.0f, 0.0f, 1.0f };
 
     glm::vec3 m_pos { 0.0f, 0.5f, -3.0f };
-
-    float m_speed = 0.01f;
 };
 
 }

@@ -20,14 +20,11 @@ public:
 
 private:
     GLFWwindow* m_pWnd;
-    Renderer m_renderer;
-
     std::vector<std::unique_ptr<renderable::IRenderable>> m_renderables;
-
     Camera m_camera;
 
     static void ResizeCallback(GLFWwindow*, int width, int height);
-    static void KeyboardCallback(GLFWwindow* window, int key, int, int action, int);
+    static void KeyboardCallback(GLFWwindow* pWnd, int key, int, int action, int);
 
     void ProcessInput();
     void Render();

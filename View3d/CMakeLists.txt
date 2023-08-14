@@ -23,6 +23,7 @@ SET(SRC src/View3D.cpp
         src/Renderer.cpp
         src/Shader.cpp
         src/ShaderFactory.cpp
+        src/Timer.cpp
         src/renderable/Floor.cpp
         src/renderable/Shape.cpp
         src/renderable/ShapeFactory.cpp)

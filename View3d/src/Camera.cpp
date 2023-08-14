@@ -2,21 +2,20 @@
 
 #include "Camera.hpp"
 
+#include "Timer.hpp"
+
 using namespace dice::view3d;
 
-const glm::vec3 Camera::sc_left = glm::vec3(1.0f, 0.0f, 0.0f);
-const glm::vec3 Camera::sc_up = glm::vec3(0.0f, 1.0f, 0.0f);
-const glm::vec3 Camera::sc_front = glm::vec3(0.0f, 0.0f, 1.0f);
+float Camera::s_speedFactor = 2.5f;
 
-const std::unordered_map<Camera::Direction, glm::vec3> Camera::sc_directionMap
+void Camera::ChangeSpeedFactor(bool increaseSpeed)
 {
-    { Direction::UP, -sc_up},
-    { Direction::DOWN, +sc_up},
-    { Direction::LEFT, sc_left},
-    { Direction::RIGHT, -sc_left},
-    { Direction::FORWARD, sc_front},
-    { Direction::BACK, -sc_front}
-};
+    float newSpeed = s_speedFactor + (increaseSpeed ? sc_speedIncrement : -sc_speedIncrement);
+    if (newSpeed > 0.0f)
+    {
+        s_speedFactor = newSpeed;
+    }
+}
 
 void Camera::Move(const std::vector<Direction>& directions)
 {
@@ -26,19 +25,40 @@ void Camera::Move(const std::vector<Direction>& directions)
     }
 
     glm::vec3 dPos { 0.0f };
-    std::function<glm::vec3(glm::vec3, Direction)> perturbationFold = [](glm::vec3 pos, Direction dir)
+    for (Direction dir : directions)
     {
-        return pos += sc_directionMap.at(dir);
+        switch(dir)
+        {
+            case Direction::UP:
+                dPos -= m_up;
+                break;
+            case Direction::DOWN:
+                dPos += m_up;
+                break;
+            case Direction::LEFT:
+                dPos += m_left;
+                break;
+            case Direction::RIGHT:
+                dPos -= m_left;
+                break;
+            case Direction::FORWARD:
+                dPos += m_front;
+                break;
+            case Direction::BACK:
+                dPos -= m_front;
+                break;
+        }
     };
-    dPos = std::accumulate(directions.begin(), directions.end(), dPos, perturbationFold);
 
     if (glm::length(dPos) > 0.0)
     {
-        m_pos += m_speed * glm::normalize(dPos);
+        float speed = s_speedFactor * Timer::GetInstance().GetTimeDelta();
+        m_pos += speed * glm::normalize(dPos);
+        m_pos.y = std::max(0.1f, m_pos.y);
     }
 }
 
 glm::mat4 Camera::GetView() const
 {
-    return glm::lookAt(m_pos, m_pos + sc_front, sc_up);
+    return glm::lookAt(m_pos, m_pos + m_front, m_up);
 }

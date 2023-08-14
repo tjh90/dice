@@ -26,9 +26,6 @@ public:
     const Colour& GetColour() const;
     void SetColour(const Colour& colour);
 
-    const glm::mat4& GetProjection() const;
-    void SetProjection(const glm::mat4& projection);
-
     const glm::mat4& GetTransform() const;
     void SetTransform(const glm::mat4& transform);
 

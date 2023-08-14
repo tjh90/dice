@@ -4,6 +4,7 @@
 
 #include "Shader.hpp"
 #include "ShaderFactory.hpp"
+#include "Timer.hpp"
 
 #include "renderable/Floor.hpp"
 #include "renderable/ShapeFactory.hpp"
@@ -37,9 +38,10 @@ App::App(GLFWwindow* pWnd, int width, int height) :
     // Set up keyboard callback.
     glfwSetKeyCallback(pWnd, KeyboardCallback);
 
-    ShaderFactory shaderFactory;
+    Renderer::Setup();
 
     // Create floor.
+    ShaderFactory shaderFactory;
     Colour floorColour = ShaderFactory::CreateColour(8U, 32U, 8U);
     std::shared_ptr<Shader> pFloorShader = shaderFactory.CreateSimpleShader(&floorColour);
     std::unique_ptr<IRenderable> pFloor = std::make_unique<Floor>(pFloorShader, glm::vec3 { 0.0f });
@@ -52,7 +54,8 @@ App::App(GLFWwindow* pWnd, int width, int height) :
         ShaderFactory::CreateColour(0U, 128, 0U)
     };
     std::vector<glm::vec3> cubeCentres = { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 4.0f } };
-    for (size_t i = 0; i < cubeColours.size() && i < cubeCentres.size(); i++)
+    size_t count = std::min(cubeColours.size(), cubeCentres.size());
+    for (size_t i = 0; i < count; i++)
     {
         std::shared_ptr<Shader> pCubeShader = shaderFactory.CreateSimpleShader(&cubeColours[i]);
         std::unique_ptr<IRenderable> pCube = ShapeFactory::CreateCube(pCubeShader, cubeCentres[i]);
@@ -93,10 +96,16 @@ void App::KeyboardCallback(GLFWwindow* pWnd, int key, int, int action, int)
                 glfwSetWindowShouldClose(pWnd, true);
                 break;
             case GLFW_KEY_SPACE:
-                glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+                glClearColor(0.5f, 1.0f, 1.0f, 1.0f);
                 break;
             case GLFW_KEY_M:
                 Renderer::ToggleMode();
+                break;
+            case GLFW_KEY_EQUAL:
+                Camera::ChangeSpeedFactor(true);
+                break;
+            case GLFW_KEY_MINUS:
+                Camera::ChangeSpeedFactor(false);
                 break;
             default:
                 break;
@@ -108,9 +117,11 @@ void App::RenderLoop()
 {
     while (!glfwWindowShouldClose(m_pWnd))
     {
+        Timer::GetInstance().Update();
+
         ProcessInput();
 
-        m_renderer.Render(m_renderables);
+        Renderer::Render(m_renderables);
 
         glfwSwapBuffers(m_pWnd);
         glfwPollEvents();

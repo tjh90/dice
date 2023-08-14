@@ -11,7 +11,7 @@ using namespace dice::view3d::renderable;
 
 float Renderer::s_aspectRatio = 1.0f;
 
-Renderer::Renderer()
+void Renderer::Setup()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
@@ -61,7 +61,7 @@ void Renderer::SetAspectRatio(float aspectRatio)
     s_aspectRatio = aspectRatio;
 }
 
-void Renderer::Render(const std::vector<std::unique_ptr<IRenderable>>& renderables) const
+void Renderer::Render(const std::vector<std::unique_ptr<IRenderable>>& renderables)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -71,7 +71,7 @@ void Renderer::Render(const std::vector<std::unique_ptr<IRenderable>>& renderabl
     }
 }
 
-void Renderer::Render(IRenderable* pRenderable) const
+void Renderer::Render(IRenderable* pRenderable)
 {
     std::shared_ptr<Shader> pShader = pRenderable ? pRenderable->GetShader() : nullptr;
     if (!pShader)
